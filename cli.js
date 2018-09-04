@@ -7,7 +7,6 @@ const path = require('path');
 const figlet = require('figlet');
 const pkg = require('./package.json');
 const program = require('commander');
-const throng = require('throng');
 
 let configFile, config;
 
@@ -27,15 +26,10 @@ if (configFile && typeof configFile === 'string') {
   }
 }
 
-const master = () => {
-  figlet('Wrestler', (err, data) => {
-    if (!err) {
-      console.log(data);
-    }
-  });
-};
-
-const start = (id) => {
+figlet('Wrestler', (err, data) => {
+  if (!err) {
+    console.log(data);
+  }
   const express = require('express');
   const logger = require('morgan');
   const wrestler = require('wrestler');
@@ -48,8 +42,5 @@ const start = (id) => {
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
   app.use(wrestler(config));
-  app.listen(PORT, () => console.log(`[${id}] Listening on port ${PORT}...`));
-};
-
-const workers = process.env.WEB_CONCURRENCY || undefined;
-throng({ workers, lifetime: Infinity, start, master });
+  app.listen(PORT, () => console.log(`Listening on port ${PORT}...`));
+});
