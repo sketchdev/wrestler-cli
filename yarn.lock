@@ -529,9 +529,9 @@ vary@~1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/vary/-/vary-1.1.2.tgz#2299f02c6ded30d4a5961b0b9f74524a18f634fc"
 
-wrestler@^0.5.1:
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/wrestler/-/wrestler-0.5.1.tgz#593a043f270a255411ea6a283d537c645e9235d4"
+wrestler@^0.6.0:
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/wrestler/-/wrestler-0.6.0.tgz#9c681a33670aba7fd1678e40fd7f5c4a55f1f40b"
   dependencies:
     express-validator "^5.3.0"
     jsonwebtoken "8.3.0"

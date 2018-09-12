@@ -30,7 +30,7 @@
     "express": "^4.16.3",
     "figlet": "^1.2.0",
     "morgan": "^1.9.0",
-    "wrestler": "^0.5.1"
+    "wrestler": "^0.6.0"
   },
   "homepage": "https://github.com/sketchdev/wrestler-cli#readme"
 }
