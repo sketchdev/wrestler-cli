@@ -35,15 +35,17 @@ if (configFile && typeof configFile === 'string') {
 
     const express = require('express');
     const logger = require('morgan');
-    const wrestler = require('wrestler');
-    const api = await wrestler.setup(config);
+    const Wrestler = require('wrestler');
+
+    const wrestler = new Wrestler();
+    await wrestler.setup(config);
 
     const app = express();
     app.set('trust proxy', 1); // trust first proxy
     app.use(logger(process.env.LOG_FORMAT || 'dev'));
     app.use(express.json());
     app.use(express.urlencoded({ extended: false }));
-    app.use(api);
+    app.use(wrestler.middleware());
     app.listen(PORT, () => console.log(`Listening on port ${PORT}...`));
   } catch (err) {
     console.log(err);
