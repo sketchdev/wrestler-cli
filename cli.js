@@ -9,46 +9,66 @@ const figlet = util.promisify(require('figlet'));
 const pkg = require('./package.json');
 const program = require('commander');
 
-const PORT = process.env.PORT || 3077;
-let configFile, config;
+let config;
 
 program.version(pkg.version, '-v, --version');
-program.usage('[config]');
-program.arguments('config');
+program.option('-c, --config <file>', 'Path to a configuration file');
+program.option('-e, --eject', 'Eject the server code');
 program.description('Runs an Express+Wrestler instance using the configuration file provided.');
-program.action(config => configFile = config);
 program.parse(process.argv);
 
-if (configFile && typeof configFile === 'string') {
-  if (fs.existsSync(configFile)) {
-    config = require(path.resolve(configFile));
+if (program.config) {
+  if (fs.existsSync(program.config)) {
+    config = require(path.resolve(program.config));
   } else {
-    console.log(`\nFile [${configFile}] does not exist.`);
+    console.log(`\nFile [${program.config}] does not exist.`);
     program.help();
   }
 }
 
-(async () => {
-  try {
-    console.log(await figlet('Wrestler'));
-    console.log('Press ctrl+c to exit');
+if (program.eject) {
+  const requires = 'const path = require(\'path\');';
+  const startCode = start.toString();
+  const startOptions = program.config ? `require(path.resolve('${program.config}'))` : '{}';
+  const runCode = `start(${startOptions});`;
+  console.log(`${requires}\n\n${startCode}\n\n${runCode}`);
+} else {
+  (async () => {
+    try {
+      console.log(await figlet('Wrestler'));
+      await start(config);
+    } catch (err) {
+      console.log(err);
+    }
+  })();
+}
 
-    const express = require('express');
-    const logger = require('morgan');
-    const Wrestler = require('wrestler');
 
-    const wrestler = new Wrestler();
-    await wrestler.setup(config);
+function start(options) {
+  const express = require('express');
+  const logger = require('morgan');
+  const helmet = require('helmet');
+  const cors = require('cors');
+  const Wrestler = require('wrestler');
 
+  const PORT = process.env.PORT || 3077;
+  const wrestler = new Wrestler();
+
+  wrestler.setup(options).then(() => {
     const app = express();
-    app.set('trust proxy', 1); // trust first proxy
+    app.set('trust proxy', 1);
+    app.use(helmet());
     app.use(logger(process.env.LOG_FORMAT || 'dev'));
     app.use(express.json());
     app.use(express.urlencoded({ extended: false }));
+    app.use(cors());
     app.use(wrestler.middleware());
-    app.listen(PORT, () => console.log(`Listening on port ${PORT}...`));
-  } catch (err) {
+    app.listen(PORT, () => {
+      console.log(`Listening on port ${PORT}...`);
+      console.log('Press ctrl+c to exit');
+    });
+  }).catch(err => {
     console.log(err);
-  }
-})();
+  });
+}
 
