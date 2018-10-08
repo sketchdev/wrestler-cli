@@ -32,7 +32,7 @@
     "figlet": "^1.2.0",
     "helmet": "3.13.0",
     "morgan": "^1.9.0",
-    "wrestler": "^0.8.2"
+    "wrestler": "^0.8.3"
   },
   "homepage": "https://github.com/sketchdev/wrestler-cli#readme"
 }
